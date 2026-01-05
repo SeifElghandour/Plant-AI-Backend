@@ -18,6 +18,15 @@ const scanSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  
+  treatment: {
+    type: String,
+  
+  },
+  symptoms: {
+    type: String,
+  }
+
 }, {
   timestamps: true,
 });

@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api/users', require('./routes/authRoutes'));
 app.use('/api/scans', require('./routes/scanRoutes'));
 
-// --- 👇 ده الجزء الجديد اللي كان ناقص 👇 ---
+
 app.get('/', (req, res) => {
     res.send('API is running successfully!');
 });
