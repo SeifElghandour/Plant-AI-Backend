@@ -8,7 +8,11 @@ const { protect } = require('../middleware/authMiddleware');
 const upload = multer({ dest: 'uploads/' });
 
 // Protected Routes
+
+// POST /api/scans -> Upload image and analyze
 router.post('/', protect, upload.single('image'), uploadScan);
+
+// GET /api/scans -> Get user's history
 router.get('/', protect, getMyScans);
 
 module.exports = router;
