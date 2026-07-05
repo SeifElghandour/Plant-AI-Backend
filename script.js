@@ -346,7 +346,7 @@ function formatFileSize(bytes) {
 // ============================================
 // Image Analysis (Backend + AI Pipeline)
 // ============================================
-const API_BASE_URL = 'https://weapon-internationally-aging-eng.trycloudflare.com';
+const API_BASE_URL = 'https://mean-liverpool-tahoe-quilt.trycloudflare.com';
 
 async function analyzeImage() {
     if (!selectedFile) return;
