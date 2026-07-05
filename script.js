@@ -862,22 +862,19 @@ async function handleVerifyOtp(event) {
             otp,
         });
 
-        if (data.token) {
-            // Reuse the same session-saving logic as normal login,
-            // so keys stay consistent (token / userName / userEmail / userId)
-            saveAuthSession(data, true); // true = persist in localStorage
-            updateAuthUI();
-        }
+        // Auto-login: use the SAME storage mechanism as handleLogin(),
+        // so getCurrentUser()/getAuthToken() pick it up correctly.
+        saveAuthSession(data, true);
+
+        // This swaps the auth section to the logged-in panel, hides the
+        // OTP form, and kicks off fetchUserHistory() — no manual login needed.
+        updateAuthUI();
 
         showToast(data.message || t('otpVerifySuccess'), 'success');
-        hideOtpVerification();
 
-        // No real router/dashboard route exists in this app — scroll the
-        // user to wherever "logged in" state is visible instead of
-        // calling an undefined showSection('dashboard').
-        if (data.token) {
-            scrollToSection('auth'); // or 'home', whichever shows the logged-in view
-        }
+        // "Redirect to dashboard" — in this single-page app that's the
+        // now-logged-in auth panel (shows name + scan history below it).
+        scrollToSection('auth');
     } catch (error) {
         showOtpMessage(error.message || 'Verification failed. Please try again.');
     } finally {
