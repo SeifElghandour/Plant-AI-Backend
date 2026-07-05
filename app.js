@@ -12,40 +12,14 @@ connectDB();
 
 const app = express();
 
+app.use(cors({ origin: '*' }));
+
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
   console.log('System: "uploads" directory created successfully.');
 }
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  'http://localhost:5500',
-  'http://127.0.0.1:5500',
-  'http://localhost:8080',
-  'http://127.0.0.1:8080',
-  'https://plant-care-gold.vercel.app',
-  'https://plant-care-tan.vercel.app',
-  'https://plant-cure-tan.vercel.app',
-  'https://weapon-internationally-aging-eng.trycloudflare.com',
-  'null',
-];
-
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-        return;
-      }
-      callback(new Error(`CORS blocked for origin: ${origin}`));
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-  })
-);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use('/uploads', express.static(uploadDir));
