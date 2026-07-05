@@ -39,12 +39,14 @@ async function callAiService(filePath, originalName, mimeType) {
     contentType: mimeType || 'image/jpeg',
   });
 
-  console.log('[AI Service] Sending request to:', `${AI_SERVICE_URL}/predict`);
+  const aiUrl = 'http://127.0.0.1:5001/predict';
+
+  console.log('[AI Service] Sending request to:', aiUrl);
   console.log('[AI Service] File path:', filePath);
   console.log('[AI Service] Original name:', originalName);
   console.log('[AI Service] MIME type:', mimeType);
 
-  const aiResponse = await axios.post(`${AI_SERVICE_URL}/predict`, formData, {
+  const aiResponse = await axios.post(aiUrl, formData, {
     headers: formData.getHeaders(),
     timeout: 60000,
     maxContentLength: Infinity,
