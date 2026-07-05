@@ -861,24 +861,22 @@ async function handleVerifyOtp(event) {
             email: pendingVerificationEmail,
             otp,
         });
-        
-        // Auto-login: Store token and user data
+
         if (data.token) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify({
-                _id: data._id,
-                name: data.name,
-                email: data.email,
-            }));
+            // Reuse the same session-saving logic as normal login,
+            // so keys stay consistent (token / userName / userEmail / userId)
+            saveAuthSession(data, true); // true = persist in localStorage
             updateAuthUI();
         }
-        
+
         showToast(data.message || t('otpVerifySuccess'), 'success');
         hideOtpVerification();
-        
-        // Redirect to dashboard
+
+        // No real router/dashboard route exists in this app — scroll the
+        // user to wherever "logged in" state is visible instead of
+        // calling an undefined showSection('dashboard').
         if (data.token) {
-            showSection('dashboard');
+            scrollToSection('auth'); // or 'home', whichever shows the logged-in view
         }
     } catch (error) {
         showOtpMessage(error.message || 'Verification failed. Please try again.');
