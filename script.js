@@ -1023,10 +1023,10 @@ function saveAuthSession(data, remember = true) {
         otherStorage.removeItem(key);
     });
 
-    storage.setItem('token', data.token);
-    storage.setItem('userName', data.name);
-    storage.setItem('userEmail', data.email);
-    storage.setItem('userId', data._id);
+    storage.setItem('token', data.token || '');
+    storage.setItem('userName', data.name || '');
+    storage.setItem('userEmail', data.email || '');
+    storage.setItem('userId', data._id || '');
 }
 
 function clearAuthSession() {
@@ -1042,11 +1042,15 @@ function getCurrentUser() {
         return null;
     }
 
+    const name = localStorage.getItem('userName') || sessionStorage.getItem('userName') || '';
+    const email = localStorage.getItem('userEmail') || sessionStorage.getItem('userEmail') || '';
+    const id = localStorage.getItem('userId') || sessionStorage.getItem('userId') || '';
+
     return {
         token,
-        name: localStorage.getItem('userName') || sessionStorage.getItem('userName'),
-        email: localStorage.getItem('userEmail') || sessionStorage.getItem('userEmail'),
-        id: localStorage.getItem('userId') || sessionStorage.getItem('userId'),
+        name: name === 'undefined' ? '' : name,
+        email: email === 'undefined' ? '' : email,
+        id: id === 'undefined' ? '' : id,
     };
 }
 
