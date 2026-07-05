@@ -346,7 +346,7 @@ function formatFileSize(bytes) {
 // ============================================
 // Image Analysis (Backend + AI Pipeline)
 // ============================================
-const API_BASE_URL = 'http://51.20.55.236:3000';
+const API_BASE_URL = 'https://weapon-internationally-aging-eng.trycloudflare.com';
 
 async function analyzeImage() {
     if (!selectedFile) return;

@@ -28,6 +28,7 @@ const allowedOrigins = [
   'https://plant-care-gold.vercel.app',
   'https://plant-care-tan.vercel.app',
   'https://plant-cure-tan.vercel.app',
+  'https://weapon-internationally-aging-eng.trycloudflare.com',
   'null',
 ];
 
