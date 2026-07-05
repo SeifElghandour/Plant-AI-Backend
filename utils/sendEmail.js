@@ -1,12 +1,20 @@
-const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
 
-// Check for API key at module load time
-if (!process.env.RESEND_API_KEY) {
-  console.error("CRITICAL: RESEND_API_KEY is not defined in the environment variables!");
-  console.error("Email sending will fail. Please add RESEND_API_KEY to your environment variables.");
+// Check for email credentials at module load time
+if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+  console.error("CRITICAL: EMAIL_USER or EMAIL_PASS is not defined in the environment variables!");
+  console.error("Email sending will fail. Please add EMAIL_USER and EMAIL_PASS to your environment variables.");
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 function buildOtpEmailHtml(name, otp) {
   return `
@@ -27,35 +35,28 @@ const sendEmail = async (options) => {
   try {
     console.log(`[Email] Attempting to send email to: ${options.email}`);
     
-    if (!process.env.RESEND_API_KEY) {
-      throw new Error('RESEND_API_KEY is not set in environment variables');
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      throw new Error('EMAIL_USER or EMAIL_PASS is not set in environment variables');
     }
 
-    // Resend Sandbox Mode: Only verified email can receive emails
-    // Override the recipient to the verified email for testing
-    const VERIFIED_EMAIL = 'seifelghandour26@gmail.com';
-    const recipientEmail = options.email || VERIFIED_EMAIL;
-    
-    console.log(`[Email] Resend Sandbox Mode: Sending to verified email: ${VERIFIED_EMAIL}`);
-
-    // Send email using Resend API
-    console.log('[Email] Sending email via Resend API...');
-    const data = await resend.emails.send({
-      from: 'PlantCare AI <onboarding@resend.dev>',
-      to: VERIFIED_EMAIL,
+    // Send email using Nodemailer with Gmail SMTP
+    console.log('[Email] Sending email via Gmail SMTP...');
+    const info = await transporter.sendMail({
+      from: `"PlantCare" <${process.env.EMAIL_USER}>`,
+      to: options.email,
       subject: options.subject,
       html: options.message,
     });
 
-    console.log(`[Email] ✅ Email sent successfully! Message ID: ${data.id}`);
-    return data;
+    console.log(`[Email] ✅ Email sent successfully! Message ID: ${info.messageId}`);
+    return info;
 
   } catch (error) {
     console.error('\n❌ [Email] FAILED to send email:');
     console.error(`- Message: ${error.message}`);
     
     if (error.response) {
-      console.error(`- Response: ${JSON.stringify(error.response)}`);
+      console.error(`- SMTP Response: ${error.response}`);
     }
     
     throw error;
