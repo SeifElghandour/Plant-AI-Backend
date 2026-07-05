@@ -6,7 +6,7 @@ import numpy as np
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from PIL import Image
-import tflite_runtime.interpreter as tflite
+from tensorflow.lite.python.interpreter import Interpreter as TFLiteInterpreter
 
 app = Flask(__name__)
 CORS(
@@ -49,7 +49,7 @@ for model_path in MODEL_CANDIDATES:
     
     try:
         if model_path.endswith('.tflite'):
-            interpreter = tflite.Interpreter(model_path=model_path)
+            interpreter = TFLiteInterpreter(model_path=model_path)
             interpreter.allocate_tensors()
             input_details = interpreter.get_input_details()
             output_details = interpreter.get_output_details()
