@@ -861,8 +861,25 @@ async function handleVerifyOtp(event) {
             email: pendingVerificationEmail,
             otp,
         });
+        
+        // Auto-login: Store token and user data
+        if (data.token) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify({
+                _id: data._id,
+                name: data.name,
+                email: data.email,
+            }));
+            updateAuthUI();
+        }
+        
         showToast(data.message || t('otpVerifySuccess'), 'success');
         hideOtpVerification();
+        
+        // Redirect to dashboard
+        if (data.token) {
+            showSection('dashboard');
+        }
     } catch (error) {
         showOtpMessage(error.message || 'Verification failed. Please try again.');
     } finally {
