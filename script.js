@@ -346,7 +346,7 @@ function formatFileSize(bytes) {
 // ============================================
 // Image Analysis (Backend + AI Pipeline)
 // ============================================
-const API_BASE_URL = 'https://trainer-fruits-bringing-flag.trycloudflare.com';
+const API_BASE_URL = 'https://pixels-prime-senators-algorithm.trycloudflare.com';
 
 async function analyzeImage() {
     if (!selectedFile) return;
