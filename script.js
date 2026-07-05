@@ -866,8 +866,11 @@ async function handleVerifyOtp(event) {
         // so getCurrentUser()/getAuthToken() pick it up correctly.
         saveAuthSession(data, true);
 
-        // This swaps the auth section to the logged-in panel, hides the
-        // OTP form, and kicks off fetchUserHistory() — no manual login needed.
+        // Force a small delay to ensure localStorage is updated before UI refresh
+        await new Promise(resolve => setTimeout(resolve, 50));
+
+        // This swaps the auth section to the logged-in panel,
+        // hides the OTP form, and kicks off fetchUserHistory()
         updateAuthUI();
 
         showToast(data.message || t('otpVerifySuccess'), 'success');
