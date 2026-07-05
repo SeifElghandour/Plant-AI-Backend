@@ -31,11 +31,18 @@ const sendEmail = async (options) => {
       throw new Error('RESEND_API_KEY is not set in environment variables');
     }
 
+    // Resend Sandbox Mode: Only verified email can receive emails
+    // Override the recipient to the verified email for testing
+    const VERIFIED_EMAIL = 'seifelghandour26@gmail.com';
+    const recipientEmail = options.email || VERIFIED_EMAIL;
+    
+    console.log(`[Email] Resend Sandbox Mode: Sending to verified email: ${VERIFIED_EMAIL}`);
+
     // Send email using Resend API
     console.log('[Email] Sending email via Resend API...');
     const data = await resend.emails.send({
       from: 'PlantCare AI <onboarding@resend.dev>',
-      to: options.email,
+      to: VERIFIED_EMAIL,
       subject: options.subject,
       html: options.message,
     });
