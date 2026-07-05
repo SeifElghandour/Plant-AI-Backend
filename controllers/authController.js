@@ -113,8 +113,14 @@ const verifyEmail = asyncHandler(async (req, res) => {
   user.otpExpires = null;
   await user.save();
 
+  const token = generateToken(user._id);
+
   res.status(200).json({
-    message: 'Email verified successfully. You can now log in.',
+    message: 'Email verified successfully. You are now logged in.',
+    _id: user.id,
+    name: user.name,
+    email: user.email,
+    token: token,
   });
 });
 
