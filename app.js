@@ -13,7 +13,9 @@ connectDB();
 const app = express();
 
 app.use(cors({
-    origin: ['https://plant-care-gold.vercel.app', 'http://localhost:3000', 'https://jalapeno-speckled-overreach.ngrok-free.dev'],
+    origin: ['https://plant-care-gold.vercel.app', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'ngrok-skip-browser-warning'],
     credentials: true
 }));
 

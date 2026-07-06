@@ -372,7 +372,7 @@ async function analyzeImage() {
             method: 'POST',
             body: formData,
             headers: {
-                'ngrok-skip-browser-warning': '69420',
+                'ngrok-skip-browser-warning': 'true',
             },
         };
 
@@ -949,7 +949,7 @@ async function fetchUserHistory() {
         const response = await fetch(`${API_BASE_URL}/api/scans/user`, {
             headers: { 
                 Authorization: `Bearer ${token}`,
-                'ngrok-skip-browser-warning': '69420',
+                'ngrok-skip-browser-warning': 'true',
             },
         });
 
@@ -1115,7 +1115,7 @@ async function authRequest(endpoint, body) {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': '69420',
+            'ngrok-skip-browser-warning': 'true',
         },
         body: JSON.stringify(body),
     });
