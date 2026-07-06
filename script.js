@@ -371,10 +371,13 @@ async function analyzeImage() {
         const fetchOptions = {
             method: 'POST',
             body: formData,
+            headers: {
+                'bypass-tunnel-reminder': 'true',
+            },
         };
 
         if (authToken) {
-            fetchOptions.headers = { Authorization: `Bearer ${authToken}` };
+            fetchOptions.headers.Authorization = `Bearer ${authToken}`;
         }
 
         const response = await fetch(endpoint, fetchOptions);
@@ -944,7 +947,10 @@ async function fetchUserHistory() {
 
     try {
         const response = await fetch(`${API_BASE_URL}/api/scans/user`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { 
+                Authorization: `Bearer ${token}`,
+                'bypass-tunnel-reminder': 'true',
+            },
         });
 
         if (!response.ok) {
@@ -1107,7 +1113,10 @@ function updateAuthUI() {
 async function authRequest(endpoint, body) {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'bypass-tunnel-reminder': 'true',
+        },
         body: JSON.stringify(body),
     });
 

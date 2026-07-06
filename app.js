@@ -15,7 +15,7 @@ const app = express();
 const corsOptions = {
     origin: ['https://plant-care-gold.vercel.app', 'http://localhost:3000', 'https://plantcare-api-2026.loca.lt'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization', 'bypass-tunnel-reminder'],
     credentials: true,
     optionsSuccessStatus: 200
 };
