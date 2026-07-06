@@ -346,7 +346,7 @@ function formatFileSize(bytes) {
 // ============================================
 // Image Analysis (Backend + AI Pipeline)
 // ============================================
-const API_BASE_URL = 'https://jalapeno-speckled-overreach.ngrok-free.dev';
+const API_BASE_URL = 'https://plantcare-api-2026.loca.lt';
 
 async function analyzeImage() {
     if (!selectedFile) return;
@@ -371,13 +371,10 @@ async function analyzeImage() {
         const fetchOptions = {
             method: 'POST',
             body: formData,
-            headers: {
-                'ngrok-skip-browser-warning': 'true',
-            },
         };
 
         if (authToken) {
-            fetchOptions.headers.Authorization = `Bearer ${authToken}`;
+            fetchOptions.headers = { Authorization: `Bearer ${authToken}` };
         }
 
         const response = await fetch(endpoint, fetchOptions);
@@ -947,10 +944,7 @@ async function fetchUserHistory() {
 
     try {
         const response = await fetch(`${API_BASE_URL}/api/scans/user`, {
-            headers: { 
-                Authorization: `Bearer ${token}`,
-                'ngrok-skip-browser-warning': 'true',
-            },
+            headers: { Authorization: `Bearer ${token}` },
         });
 
         if (!response.ok) {
@@ -1113,10 +1107,7 @@ function updateAuthUI() {
 async function authRequest(endpoint, body) {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
     });
 
