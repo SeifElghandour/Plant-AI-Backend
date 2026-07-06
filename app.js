@@ -27,8 +27,8 @@ if (!fs.existsSync(uploadDir)) {
   console.log('System: "uploads" directory created successfully.');
 }
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use('/uploads', express.static(uploadDir));
 
 app.use('/api/users', require('./routes/authRoutes'));
