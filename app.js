@@ -13,7 +13,7 @@ connectDB();
 const app = express();
 
 const corsOptions = {
-    origin: ['https://plant-care-gold.vercel.app', 'http://localhost:3000'],
+    origin: ['https://plant-care-gold.vercel.app', 'http://localhost:3000', 'https://jalapeno-speckled-overreach.ngrok-free.dev'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization', 'ngrok-skip-browser-warning'],
     credentials: true
