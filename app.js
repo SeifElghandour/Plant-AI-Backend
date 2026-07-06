@@ -12,7 +12,10 @@ connectDB();
 
 const app = express();
 
-app.use(cors({ origin: '*' }));
+app.use(cors({
+    origin: ['https://plant-care-gold.vercel.app', 'http://localhost:3000', 'https://jalapeno-speckled-overreach.ngrok-free.dev'],
+    credentials: true
+}));
 
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
