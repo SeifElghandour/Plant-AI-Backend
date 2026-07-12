@@ -91,7 +91,7 @@ const translations = {
         faqTitle: 'Frequently Asked Questions',
         faqDescription: 'Find answers to common questions about PlantCare, our technology, and how to get the most out of our plant health detection service.',
         faqQ1: 'How accurate is the AI plant disease detection?',
-        faqA1: 'PlantCare has been trained on over 1 million plant images and achieves an accuracy rate of 93% for common plant diseases. The model continuously learns and improves with each new analysis.',
+        faqA1: 'PlantCare has been trained on over 30 thousand plant images and achieves an accuracy rate of 93% for common plant diseases. The model continuously learns and improves with each new analysis.',
         faqQ2: 'What types of plants can I analyze?',
         faqA2: 'PlantCare supports a wide variety of plants including vegetables, fruits, flowers, ornamental plants, and agricultural crops. Our database covers 38+ plant diseases across multiple species.',
         faqQ3: 'What image formats are supported?',
