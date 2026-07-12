@@ -2,30 +2,10 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/User');
-const sendEmail = require('../utils/sendEmail');
-const { buildOtpEmailHtml } = require('../utils/sendEmail');
 
 const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&]).{8,}$/;
-const OTP_EXPIRY_MS = 10 * 60 * 1000;
 
-function generateOtp() {
-  return String(Math.floor(100000 + Math.random() * 900000));
-}
-
-async function assignAndSendOtp(user) {
-  const otp = generateOtp();
-  user.otp = otp;
-  user.otpExpires = new Date(Date.now() + OTP_EXPIRY_MS);
-  await user.save();
-
-  await sendEmail({
-    email: user.email,
-    subject: 'Your PlantCare verification code',
-    message: buildOtpEmailHtml(user.name, otp),
-  });
-}
-
-// @desc    Register new user
+// @desc    Register new user (Email verification bypassed for demo)
 // @route   POST /api/users/register
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
@@ -55,68 +35,19 @@ const registerUser = asyncHandler(async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
+  // Create user with isVerified: true (bypass email verification)
   const user = await User.create({
     name,
     email: normalizedEmail,
     password: hashedPassword,
-    isVerified: false,
+    isVerified: true,
   });
 
-  await assignAndSendOtp(user);
-
-  res.status(201).json({
-    message: 'Registration successful. Enter the 6-digit code sent to your email.',
-    email: user.email,
-  });
-});
-
-// @desc    Verify user email with OTP
-// @route   POST /api/users/verify
-// @access  Public
-const verifyEmail = asyncHandler(async (req, res) => {
-  const { email, otp } = req.body;
-
-  if (!email || !otp) {
-    res.status(400);
-    throw new Error('Email and verification code are required');
-  }
-
-  const user = await User.findOne({ email: email.trim().toLowerCase() });
-
-  if (!user) {
-    res.status(400);
-    throw new Error('Invalid verification request');
-  }
-
-  if (user.isVerified) {
-    res.status(400);
-    throw new Error('This account is already verified. You can log in.');
-  }
-
-  if (!user.otp || !user.otpExpires) {
-    res.status(400);
-    throw new Error('No active verification code. Please request a new one.');
-  }
-
-  if (user.otpExpires.getTime() < Date.now()) {
-    res.status(400);
-    throw new Error('Verification code has expired. Please request a new one.');
-  }
-
-  if (String(user.otp) !== String(otp).trim()) {
-    res.status(400);
-    throw new Error('Invalid verification code. Please try again.');
-  }
-
-  user.isVerified = true;
-  user.otp = null;
-  user.otpExpires = null;
-  await user.save();
-
+  // Generate token and return immediately (auto-login)
   const token = generateToken(user._id);
 
-  res.status(200).json({
-    message: 'Email verified successfully. You are now logged in.',
+  res.status(201).json({
+    message: 'Registration successful. You are now logged in.',
     _id: user.id,
     name: user.name,
     email: user.email,
@@ -124,33 +55,23 @@ const verifyEmail = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Resend OTP verification code
+// @desc    Verify user email with OTP (Bypassed - returns success)
+// @route   POST /api/users/verify
+// @access  Public
+const verifyEmail = asyncHandler(async (req, res) => {
+  // Email verification bypassed - always return success
+  res.status(200).json({
+    message: 'Email verification bypassed for demo.',
+  });
+});
+
+// @desc    Resend OTP verification code (Bypassed - returns success)
 // @route   POST /api/users/resend-otp
 // @access  Public
 const resendOTP = asyncHandler(async (req, res) => {
-  const { email } = req.body;
-
-  if (!email) {
-    res.status(400);
-    throw new Error('Email is required');
-  }
-
-  const user = await User.findOne({ email: email.trim().toLowerCase() });
-
-  if (!user) {
-    res.status(400);
-    throw new Error('No account found with that email address');
-  }
-
-  if (user.isVerified) {
-    res.status(400);
-    throw new Error('This account is already verified. You can log in.');
-  }
-
-  await assignAndSendOtp(user);
-
+  // OTP resend bypassed - always return success
   res.status(200).json({
-    message: 'A new verification code has been sent to your email.',
+    message: 'OTP resend bypassed for demo.',
   });
 });
 
@@ -164,10 +85,11 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email: normalizedEmail });
 
   if (user && (await bcrypt.compare(password, user.password))) {
-    if (!user.isVerified) {
-      res.status(401);
-      throw new Error('Please verify your email before logging in.');
-    }
+    // Email verification check bypassed for demo
+    // if (!user.isVerified) {
+    //   res.status(401);
+    //   throw new Error('Please verify your email before logging in.');
+    // }
 
     res.json({
       _id: user.id,
@@ -181,6 +103,26 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get user profile
+// @route   GET /api/users/profile
+// @access  Private
+const getUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id).select('-password');
+  
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  res.json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    isVerified: user.isVerified,
+    createdAt: user.createdAt,
+  });
+});
+
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: '30d',
@@ -192,4 +134,5 @@ module.exports = {
   verifyEmail,
   resendOTP,
   loginUser,
+  getUserProfile,
 };
